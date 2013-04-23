@@ -1,0 +1,7 @@
+{
+	"name": "Homer",
+	"family": {
+		"wife": "Marge",
+		"kids": ["Bart", "Lisa", "Maggie"]
+	}
+}
