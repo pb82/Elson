@@ -201,12 +201,12 @@ namespace JSON {
                 return;
             } else {
                 // Objects must end with ...}
-                throw ParseException("}", peek(), lineNumber);
+                throw ParseException(lineNumber);
             }
 
         } else {
             // Objects have to start with {...
-            throw ParseException("{", peek(), lineNumber);
+            throw ParseException(lineNumber);
         }
     }
 
@@ -227,14 +227,14 @@ namespace JSON {
             
             // Properties must end with '"'
             if (next() != ESC_QUOTATION_MARK) {
-                throw ParseException("\"", peek(), lineNumber);
+                throw ParseException(lineNumber);
             } else {
                 clearWhitespace();
                 // ...": ...
                 // Properties must be in the form of
                 // "key": value
                 if (peek() != ':') {
-                    throw ParseException(":", peek(), lineNumber);
+                    throw ParseException(lineNumber);
                 } else {
                     consume(); // ':'
                     // Parse the value
@@ -243,7 +243,7 @@ namespace JSON {
                 }
             }
         } else {
-            throw ParseException("\"", peek(), lineNumber);
+            throw ParseException(lineNumber);
         }
     }
 
@@ -278,7 +278,7 @@ namespace JSON {
                     parseNumber();
                     return;
                 } else {
-                    throw ParseException("value", peek(), lineNumber);
+                    throw ParseException(lineNumber);
                 }
         }
     }
@@ -298,7 +298,7 @@ namespace JSON {
       if (currentString.str().compare("null") == 0) {
           store(Value());
       } else {
-        throw ParseException("null", peek(), lineNumber);
+        throw ParseException(lineNumber);
       }
     }
 
@@ -330,7 +330,7 @@ namespace JSON {
         } else if (currentString.str().compare("false") == 0) {
             result = false;
         } else {
-            throw ParseException ("true or false", peek(), lineNumber);
+            throw ParseException (lineNumber);
         } 
         
         store(result);
@@ -395,7 +395,7 @@ namespace JSON {
               readUTF8Escape();            
               break;
           default:
-              throw ParseException("escapable character", peek(), lineNumber);
+              throw ParseException(lineNumber);
       }
     }
 
@@ -409,7 +409,7 @@ namespace JSON {
         
         for (int index=0;index<4;index++) {
             if (!hasNext() || !validHexDigit(peek())) {
-              throw ParseException("valid unicode escape", peek(), lineNumber);
+              throw ParseException(lineNumber);
             }
             
             tmp[index] = next();
@@ -448,7 +448,7 @@ namespace JSON {
         }
         
         if (peek() != ']') {
-            throw ParseException("]", peek(), lineNumber);
+            throw ParseException(lineNumber);
         } else {
             consume(); // ']'
         }
@@ -466,8 +466,8 @@ namespace JSON {
             this->source = source;
             objectStack.push(&value);
             parseValue();
-            if (parseIndex < source.length()) {
-                throw TrailingCharactersException();
+            if (parseIndex < (source.length()-1)) {
+                throw UnexpectedCharactersException();
             }
         }
     }

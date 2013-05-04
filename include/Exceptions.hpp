@@ -1,85 +1,42 @@
 #include <iostream>
 #include <sstream>
-#include <exception>
+#include <stdexcept>
 
 namespace JSON {
     /*
      * Exception for unexpected end of parse input
      */
-    class UnexpectedEndOfInputException : public std::exception {
+    class UnexpectedEndOfInputException : public std::runtime_error {
     public:
-        UnexpectedEndOfInputException(unsigned int lineNumber)
-          : lineNumber(lineNumber) {
+        UnexpectedEndOfInputException(int line) 
+        : std::runtime_error("") {
+            std::stringstream ss;
+            ss << "Unexpected end of input in line " << line;
+            static_cast<std::runtime_error&>(*this) = 
+              std::runtime_error(ss.str());
         }
-        
-        virtual const char* what() const throw() {
-            std::ostringstream ss;
-            ss 
-              << "Unexpected end of input in line "
-              << lineNumber;
-              
-            return ss.str().c_str();
-        }
-    private:
-        unsigned int lineNumber;
     };    
 
     /*
      * Parsing terminated but still data in the stream
      */
-    class TrailingCharactersException : public std::exception {
+    class UnexpectedCharactersException : public std::runtime_error {
     public:
-        virtual const char* what() const throw() {
-            std::ostringstream ss;
-            ss 
-              << "Trailing characters in stream";
-              
-            return ss.str().c_str();
-        }
+        UnexpectedCharactersException()
+        : std::runtime_error("Unexpected characters at end of input") { }
     };    
     
     /*
-     * On error throw an exception of the form:
-     * Expected X but found Y
+     * JSON syntax error
      */
-    class ParseException : public std::exception {
-        public:
-            ParseException(
-              const char *expected, 
-              const char* found,
-              unsigned int lineNumber) : lineNumber(lineNumber) {
-              setReason(expected, found);
-            }
-        
-            ParseException(
-              const char *expected, 
-              char found,
-              unsigned int lineNumber) : lineNumber(lineNumber) {
-              const char* f = &found;
-              setReason(expected, f);
-            }
-
-            virtual ~ParseException() throw() { }
-
-            virtual const char *what() const throw() {
-                return reason.c_str();
-            }
-        private:
-            unsigned int lineNumber;
-        
-            void setReason(const char* expected, const char* found) {
-                std::ostringstream ss;
-                ss
-                    << "Expected '"
-                    << expected
-                    << "' but found '"
-                    << found
-                    << "' in line "
-                    << lineNumber;
-
-                reason = ss.str();
-            }
-            
-            std::string reason;
+    class ParseException : public std::runtime_error {
+    public:
+        ParseException(int line)
+        : std::runtime_error("") {
+            std::stringstream ss;
+            ss << "Syntax error in line " << line;
+            static_cast<std::runtime_error&>(*this) = 
+              std::runtime_error(ss.str());
+        }
     };
 }
