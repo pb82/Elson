@@ -1,2 +1,5 @@
+CXX = g++
+CXX_FLAGS = --std=c++0x
+
 test:
-	@(cd tests; g++ --std=c++0x tests.cpp; ./a.out; rm a.out)
+	@(cd tests; $(CXX) $(CXX_FLAGS) tests.cpp; ./a.out; rm a.out)
