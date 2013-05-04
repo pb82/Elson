@@ -2,6 +2,7 @@
 #include <vector>
 #include <tuple>
 #include <map>
+#include <cmath>
 
 namespace JSON {
     // Forward declaration needed for typedefs.
@@ -89,6 +90,16 @@ namespace JSON {
         Value(int val) 
         : type(JSON_NUMBER) {
             std::get<JSON_NUMBER>(value) = val;
+        }
+    
+        Value(long int val) 
+        : type(JSON_NUMBER) {
+            std::get<JSON_NUMBER>(value) = (int) val;
+        }
+    
+        Value(unsigned int val) 
+        : type(JSON_NUMBER) {
+            std::get<JSON_NUMBER>(value) = (int) val;
         }
     
         Value(double val) 
@@ -223,11 +234,22 @@ namespace JSON {
             return fromString<double>(std::get<JSON_STRING>(value));
         case JSON_BOOL:
             // Bool -> Number
-            return std::get<JSON_BOOL>(value) ? 0 : 1;
+            return std::get<JSON_BOOL>(value) ? 1 : 0;
         default:
             throw(ConversionException(type, typenames[JSON_NUMBER]));
         }
     }
+    
+    // JSON_NUMBER
+    // Simply cast to other numeric types
+    template <> int Value::as() 
+    throw(ConversionException) { return (int) as<double>(); }
+    
+    template <> unsigned int Value::as() 
+    throw(ConversionException) { return (unsigned int) std::abs(as<double>()); }
+    
+    template <> long Value::as() 
+    throw(ConversionException) { return (long) as<double>(); }
     
     // JSON_STRING
     template <> std::string Value::as() throw(ConversionException) {
@@ -240,7 +262,7 @@ namespace JSON {
             return toString<double>(std::get<JSON_NUMBER>(value));
         case JSON_BOOL:
             // Bool -> String
-            return toString<bool>(std::get<JSON_BOOL>(value));
+            return std::get<JSON_BOOL>(value) ? "true" : "false";
         case JSON_NULL:
             // Null -> String
             return typenames[JSON_NULL];

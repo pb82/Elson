@@ -17,5 +17,5 @@ int main () {
     }
     
     parser.parse(val, json_source);
-    std::cout << printer.print(val) << std::endl;
+    std::cout << val["fathers"][0]["name"].as<std::string>() << std::endl;
 }
