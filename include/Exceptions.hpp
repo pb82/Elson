@@ -24,6 +24,19 @@ namespace JSON {
         unsigned int lineNumber;
     };    
 
+    /*
+     * Parsing terminated but still data in the stream
+     */
+    class TrailingCharactersException : public std::exception {
+    public:
+        virtual const char* what() const throw() {
+            std::ostringstream ss;
+            ss 
+              << "Trailing characters in stream";
+              
+            return ss.str().c_str();
+        }
+    };    
     
     /*
      * On error throw an exception of the form:

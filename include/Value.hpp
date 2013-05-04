@@ -163,11 +163,17 @@ namespace JSON {
         }
 
         // Access and construction by [] operator
-        Value& operator[](const char* key) {
+        Value& operator[](std::string&& key) {
             // This may also be used for construction so
             // ensure that the value is object type.
             type = JSON_OBJECT;
             return std::get<JSON_OBJECT>(value)[key];
+        }
+
+        // Access and construction by [] operator
+        // Invoke operator[](string&& key)
+        Value& operator[](std::string& key) {
+            return (*this)[key.c_str()];
         }
 
         // Array access and manipulation

@@ -29,10 +29,15 @@ namespace JSON {
         public:
             Parser() : parseIndex(0), lineNumber(1) { }
 
-            void parse(Value& object, std::string& source) throw(ParseException);
-            void parse(Value& object, const char * source) throw(ParseException);
+            void parse(Value& object, std::string& source) throw(std::exception);
+            void parse(Value& object, const char * source) throw(std::exception);
 
         private:
+            void reset() {
+                lineNumber = 1;
+                parseIndex = 0;
+            }
+        
             // Increment the parse index until a non-whitespace character
             // is encountered.
             void clearWhitespace() {
@@ -134,16 +139,16 @@ namespace JSON {
                     || (code >= 97 && code <= 102);
             }
 
-            void parseObject()      throw(ParseException);
-            void parseProperty()    throw(ParseException);
-            void parseValue()       throw(ParseException);
-            void parseString()      throw(ParseException);
-            void parseArray()       throw(ParseException);
-            void parseBoolean()     throw(ParseException);
-            void parseNumber()      throw(ParseException);
-            void parseNull()        throw(ParseException);
-            void escapeChar()       throw(ParseException);
-            void readUTF8Escape()   throw(ParseException);
+            void parseObject()      throw(std::exception);
+            void parseProperty()    throw(std::exception);
+            void parseValue()       throw(std::exception);
+            void parseString()      throw(std::exception);
+            void parseArray()       throw(std::exception);
+            void parseBoolean()     throw(std::exception);
+            void parseNumber()      throw(std::exception);
+            void parseNull()        throw(std::exception);
+            void escapeChar()       throw(std::exception);
+            void readUTF8Escape()   throw(std::exception);
                         
             unsigned int parseIndex;
             unsigned int lineNumber;
@@ -160,7 +165,7 @@ namespace JSON {
     /**
      * { ... }
      */
-    void Parser::parseObject() throw(ParseException) {
+    void Parser::parseObject() throw(std::exception) {
         clearWhitespace();
         if (next() == '{') {
             clearWhitespace();
@@ -208,7 +213,7 @@ namespace JSON {
     /**
      * ...:
      */
-    void Parser::parseProperty() throw(ParseException) {
+    void Parser::parseProperty() throw(std::exception) {
         // Reset currentProperty buffer
         currentProperty.str(""); 
         clearWhitespace();
@@ -245,7 +250,7 @@ namespace JSON {
     /**
      * :...
      */
-    void Parser::parseValue() throw(ParseException) {
+    void Parser::parseValue() throw(std::exception) {
         clearWhitespace();
         
         // Decide the type of the value on the stream
@@ -281,7 +286,7 @@ namespace JSON {
     /**
      * null
      */
-    void Parser::parseNull() throw(ParseException) {
+    void Parser::parseNull() throw(std::exception) {
       currentString.str("");
       
       // Read the next four characters and test if they
@@ -300,7 +305,7 @@ namespace JSON {
     /**
      * numbers
      */
-    void Parser::parseNumber() throw(ParseException) {
+    void Parser::parseNumber() throw(std::exception) {
         currentString.str("");
         while (hasNext() && validNumericChar(peek())) {
             currentString << next();
@@ -312,7 +317,7 @@ namespace JSON {
     /**
      * true | false 
      */
-    void Parser::parseBoolean() throw(ParseException) {
+    void Parser::parseBoolean() throw(std::exception) {
         currentString.str("");
         // consume lowercase letters
         while (peek() >= 97 && peek() <= 122) {
@@ -334,7 +339,7 @@ namespace JSON {
     /**
      * "..."
      */
-    void Parser::parseString() throw(ParseException) {
+    void Parser::parseString() throw(std::exception) {
         // Reset string buffer
         currentString.str("");
         consume(); // '"'
@@ -354,7 +359,7 @@ namespace JSON {
     /**
      * \...
      */
-    void Parser::escapeChar() throw(ParseException) {
+    void Parser::escapeChar() throw(std::exception) {
       consume(); // REVERSE_SOLIDUS
       // Decide which escape character follows
       switch(peek()) {
@@ -394,7 +399,7 @@ namespace JSON {
       }
     }
 
-    void Parser::readUTF8Escape() throw(ParseException) {
+    void Parser::readUTF8Escape() throw(std::exception) {
         consume(); // u
         int codePoint = -1;
         std::string tmp = "    ";
@@ -420,7 +425,7 @@ namespace JSON {
     /**
      * [...]
      */
-    void Parser::parseArray() throw(ParseException) {
+    void Parser::parseArray() throw(std::exception) {
         consume(); // '['
         
         objectStack.push(&store(Array {}));
@@ -455,16 +460,20 @@ namespace JSON {
      * Entry points
      */
     inline void Parser::parse(Value& value, std::string &source) 
-    throw(ParseException) {
+    throw(std::exception) {
+        reset();
         if (source.length() > 0) {
             this->source = source;
             objectStack.push(&value);
             parseValue();
+            if (parseIndex < source.length()) {
+                throw TrailingCharactersException();
+            }
         }
     }
 
     inline void Parser::parse(Value& value, const char *source) 
-    throw(ParseException) {
+    throw(std::exception) {
         std::string _source(source);
         parse(value, _source);
     }

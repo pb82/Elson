@@ -79,9 +79,13 @@ TEST_CASE( "base/types", "Basic JSON Data types" ) {
     
     val = { {1,0,0}, {0,1,0},{0,0,1} };
     REQUIRE(val.is(JSON_ARRAY));
+    REQUIRE(val.as<Array>().size() == 3);
     REQUIRE(val[0].is(JSON_ARRAY));
     REQUIRE(val[1].is(JSON_ARRAY));
     REQUIRE(val[2].is(JSON_ARRAY));
+    REQUIRE(val[0].as<Array>().size() == 3);
+    REQUIRE(val[1].as<Array>().size() == 3);
+    REQUIRE(val[2].as<Array>().size() == 3);
     REQUIRE(val[0][0].is(JSON_NUMBER));
     REQUIRE(val[0][1].is(JSON_NUMBER));
     REQUIRE(val[0][2].is(JSON_NUMBER));
@@ -92,5 +96,29 @@ TEST_CASE( "base/types", "Basic JSON Data types" ) {
     REQUIRE(val[2][1].is(JSON_NUMBER));
     REQUIRE(val[2][2].is(JSON_NUMBER));
     
+    std::string key = "property";
+    val = Object { { "property", "value" } };
+    REQUIRE(val.is(JSON_OBJECT));
+    REQUIRE(val["property"].is(JSON_STRING));
+    REQUIRE(val[key].is(JSON_STRING));
+    REQUIRE(val[std::string("property")].is(JSON_STRING));
     
+    REQUIRE(val["property"].as<std::string>().compare("value") == 0);
+    
+    val["property"] = 42;
+    REQUIRE(val["property"].is(JSON_NUMBER));
+    REQUIRE(val[key].as<unsigned int>() == 42);
+}
+
+TEST_CASE( "base/parse", "Basic parsing") {
+    Parser p;
+    Value val;
+    
+    auto numbers = {"0", "1", "1E3", "1e-3", "0.5", "-.05e-07"};
+    for (auto number: numbers) {
+        REQUIRE_NOTHROW(p.parse(val, number));
+        REQUIRE(val.is(JSON_NUMBER));
+    }
+    
+    REQUIRE_THROWS(p.parse(val, "-0.5w4"));
 }
