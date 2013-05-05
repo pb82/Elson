@@ -112,13 +112,38 @@ TEST_CASE( "base/types", "Basic JSON Data types" ) {
 
 TEST_CASE( "base/parse", "Basic parsing") {
     Parser p;
+    Printer printer;
     Value val;
     
     auto numbers = {"0", "1", "1E3", "1e-3", "0.5", "-.05e-07"};
+    
     for (auto number: numbers) {
         REQUIRE_NOTHROW(p.parse(val, number));
         REQUIRE(val.is(JSON_NUMBER));
     }
     
     REQUIRE_THROWS(p.parse(val, "-0.5w4"));
+    
+    std::vector<std::string> strings = {
+        "\"0\"", 
+        "\"hello world\"", 
+        "\"äöüȩéáã\""
+    };
+    
+    for (int i = 0; i < strings.size(); i++) {
+        REQUIRE_NOTHROW(p.parse(val, strings[i]));
+        REQUIRE(printer.print(val).compare(strings[i]) == 0);
+    }
+    
+    std::map<std::string, std::string> escapes = {
+        { "\"\\\\\"", "\"\\\"" },
+        { "\"\\/\"", "\"/\"" },
+        { "\"\\u5022\"", "\"倢\"" }
+        
+    };
+    
+    for (auto pair: escapes) {
+        REQUIRE_NOTHROW(p.parse(val, pair.first));
+        REQUIRE(printer.print(val).compare(pair.second) == 0);
+    }
 }

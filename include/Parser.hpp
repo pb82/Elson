@@ -29,7 +29,7 @@ namespace JSON {
         public:
             Parser() : parseIndex(0), lineNumber(1) { }
 
-            void parse(Value& object, std::string& source) throw(std::exception);
+            void parse(Value& object, const std::string& source) throw(std::exception);
             void parse(Value& object, const char * source) throw(std::exception);
 
         private:
@@ -459,7 +459,7 @@ namespace JSON {
     /**
      * Entry points
      */
-    inline void Parser::parse(Value& value, std::string &source) 
+    inline void Parser::parse(Value& value, const std::string &source) 
     throw(std::exception) {
         reset();
         if (source.length() > 0) {
