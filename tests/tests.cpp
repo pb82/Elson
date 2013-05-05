@@ -114,7 +114,10 @@ TEST_CASE( "base/parse", "Basic parsing") {
     Parser p;
     Printer printer;
     Value val;
-    
+
+    REQUIRE_NOTHROW(p.parse(val, ""));
+    REQUIRE(val.is(JSON_NULL));
+
     auto numbers = {"0", "1", "1E3", "1e-3", "0.5", "-.05e-07"};
     
     for (auto number: numbers) {
@@ -170,4 +173,26 @@ TEST_CASE( "base/parse", "Basic parsing") {
     REQUIRE(val.is(JSON_ARRAY));
     REQUIRE(printer.print(val).compare("[1,2,4]") == 0);
     REQUIRE(val.as<Array>().size() == 3);
+    
+    REQUIRE_THROWS(p.parse(val, "["));
+    REQUIRE_THROWS(p.parse(val, "]"));
+    REQUIRE_THROWS(p.parse(val, "[["));
+    REQUIRE_THROWS(p.parse(val, "]]"));    
+    REQUIRE_THROWS(p.parse(val, "[,]"));
+    REQUIRE_THROWS(p.parse(val, "[1,]"));
+    REQUIRE_THROWS(p.parse(val, "[,1]"));
+    REQUIRE_THROWS(p.parse(val, "[1,2"));
+    REQUIRE_THROWS(p.parse(val, "1,2]"));
+    REQUIRE_THROWS(p.parse(val, "[[],[]"));
+    REQUIRE_THROWS(p.parse(val, "[[],]]"));
+    REQUIRE_THROWS(p.parse(val, "[[1,2,],[]]"));
+    REQUIRE_THROWS(p.parse(val, "[[1,2,] []]"));
+    
+    REQUIRE_NOTHROW(p.parse(val, "[[]]"));
+    REQUIRE_NOTHROW(p.parse(val, "[[[]]]"));
+    //REQUIRE_NOTHROW(p.parse(val, "[[],[]]"));
+    REQUIRE_NOTHROW(p.parse(val, "[[[]],[[]]]"));
+    
+    
+      
 }

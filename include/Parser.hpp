@@ -430,15 +430,18 @@ namespace JSON {
      */
     void Parser::parseArray() throw(std::exception) {
         consume(); // '['
-        
+                
         objectStack.push(&store(Array {}));
 
+        // Empty array?
+        if (peek() == ']') {
+            consume(); // ']'
+            objectStack.pop();
+            return;
+        }
+                
         while(hasNext()) {                        
             clearWhitespace();
-            // Empty array?
-            if (peek() == ']') {
-                break;
-            }
 
             parseValue();
             clearWhitespace();
