@@ -145,5 +145,29 @@ TEST_CASE( "base/parse", "Basic parsing") {
     for (auto pair: escapes) {
         REQUIRE_NOTHROW(p.parse(val, pair.first));
         REQUIRE(printer.print(val).compare(pair.second) == 0);
-    }
+    }    
+    
+    REQUIRE_NOTHROW(p.parse(val, "true"));
+    REQUIRE(val.is(JSON_BOOL));
+    REQUIRE(val.as<bool>());
+    REQUIRE(printer.print(val).compare("true") == 0);
+    
+    REQUIRE_NOTHROW(p.parse(val, "false"));
+    REQUIRE(val.is(JSON_BOOL));
+    REQUIRE(!val.as<bool>());
+    REQUIRE(printer.print(val).compare("false") == 0);
+    
+    REQUIRE_NOTHROW(p.parse(val, "null"));
+    REQUIRE(val.is(JSON_NULL));
+    REQUIRE(printer.print(val).compare("null") == 0);
+    
+    REQUIRE_NOTHROW(p.parse(val, "[]"));
+    REQUIRE(val.is(JSON_ARRAY));
+    REQUIRE(printer.print(val).compare("[]") == 0);
+    REQUIRE(val.as<Array>().size() == 0);
+    
+    REQUIRE_NOTHROW(p.parse(val, "[ 1, 2,   4   ]"));
+    REQUIRE(val.is(JSON_ARRAY));
+    REQUIRE(printer.print(val).compare("[1,2,4]") == 0);
+    REQUIRE(val.as<Array>().size() == 3);
 }

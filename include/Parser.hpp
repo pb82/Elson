@@ -36,6 +36,9 @@ namespace JSON {
             void reset() {
                 lineNumber = 1;
                 parseIndex = 0;
+                while(!objectStack.empty()) {
+                    objectStack.pop();
+                }
             }
         
             // Increment the parse index until a non-whitespace character
@@ -320,7 +323,7 @@ namespace JSON {
     void Parser::parseBoolean() throw(std::exception) {
         currentString.str("");
         // consume lowercase letters
-        while (peek() >= 97 && peek() <= 122) {
+        while (hasNext() && peek() >= 97 && peek() <= 122) {
             currentString << next();
         }
 
@@ -463,6 +466,7 @@ namespace JSON {
     throw(std::exception) {
         reset();
         if (source.length() > 0) {
+            value = null;
             this->source = source;
             objectStack.push(&value);
             parseValue();
