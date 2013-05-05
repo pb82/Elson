@@ -190,7 +190,7 @@ TEST_CASE( "base/parse", "Basic parsing") {
     
     REQUIRE_NOTHROW(p.parse(val, "[[]]"));
     REQUIRE_NOTHROW(p.parse(val, "[[[]]]"));
-    //REQUIRE_NOTHROW(p.parse(val, "[[],[]]"));
+    REQUIRE_NOTHROW(p.parse(val, "[[],[]]"));
     REQUIRE_NOTHROW(p.parse(val, "[[[]],[[]]]"));
     
     
