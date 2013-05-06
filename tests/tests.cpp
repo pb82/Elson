@@ -128,6 +128,7 @@ TEST_CASE( "base/parse", "Basic parsing") {
     REQUIRE_THROWS(p.parse(val, "-0.5w4"));
     
     std::vector<std::string> strings = {
+        "\"\"",
         "\"0\"", 
         "\"hello world\"", 
         "\"äöüȩéáã\""
@@ -179,6 +180,7 @@ TEST_CASE( "base/parse", "Basic parsing") {
     REQUIRE_THROWS(p.parse(val, "[["));
     REQUIRE_THROWS(p.parse(val, "]]"));    
     REQUIRE_THROWS(p.parse(val, "[,]"));
+    REQUIRE_THROWS(p.parse(val, "[][]"));
     REQUIRE_THROWS(p.parse(val, "[1,]"));
     REQUIRE_THROWS(p.parse(val, "[,1]"));
     REQUIRE_THROWS(p.parse(val, "[1,2"));
@@ -192,7 +194,27 @@ TEST_CASE( "base/parse", "Basic parsing") {
     REQUIRE_NOTHROW(p.parse(val, "[[[]]]"));
     REQUIRE_NOTHROW(p.parse(val, "[[],[]]"));
     REQUIRE_NOTHROW(p.parse(val, "[[[]],[[]]]"));
+    REQUIRE_NOTHROW(p.parse(val, "[[[1]],[[2]]]"));
+    REQUIRE_NOTHROW(p.parse(val, "[[[1,null,true,false,\"\"]],[[]]]"));
+    REQUIRE(val[0][0][0].is(JSON_NUMBER));
+    REQUIRE(val[0][0][1].is(JSON_NULL));
+    REQUIRE(val[0][0][2].is(JSON_BOOL));
+    REQUIRE(val[0][0][3].is(JSON_BOOL));
+    REQUIRE(val[0][0][4].is(JSON_STRING));
+    REQUIRE(val[0][0].as<Array>().size() == 5);
+    REQUIRE(printer.print(val).compare("[[[1,null,true,false,\"\"]],[[]]]") == 0);
+    
+    val[0][0].as<Array>().push_back(null);
+    REQUIRE(val[0][0].as<Array>().size() == 5);
+
+    val[0][0].asMutable<Array>().push_back(null);
+    REQUIRE(val[0][0].as<Array>().size() == 6);
+    
+    REQUIRE_NOTHROW(p.parse(val, "{}"));
+    REQUIRE_THROWS(p.parse(val, "{1}"));
+    REQUIRE_THROWS(p.parse(val, "{{}}"));
+    REQUIRE_NOTHROW(p.parse(val, "{\"a\": \"b\"}"));
+    REQUIRE(val["a"].as<std::string>().compare("b") == 0);
     
     
-      
 }

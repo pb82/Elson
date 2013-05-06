@@ -1,3 +1,6 @@
+#ifndef VALUE_H
+#define VALUE_H
+
 #include <sstream>
 #include <vector>
 #include <tuple>
@@ -199,8 +202,7 @@ namespace JSON {
 
         // Value access (and conversion)
         template <typename T> T as() throw(ConversionException);
-        template <typename T> T& asMutable();
-        
+        template <typename T> T& asMutable();                
     private:
         // The actual type of the value.
         JsonType type;
@@ -312,5 +314,7 @@ namespace JSON {
         default:
             throw(ConversionException(type, typenames[JSON_OBJECT]));
         }
-    } 
+    }    
 }
+
+#endif // VALUE_H

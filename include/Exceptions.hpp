@@ -1,3 +1,6 @@
+#ifndef EXCEPTIONS_H
+#define EXCEPTIONS_H
+
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -40,3 +43,5 @@ namespace JSON {
         }
     };
 }
+
+#endif // EXCEPTIONS_H

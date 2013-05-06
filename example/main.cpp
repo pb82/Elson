@@ -15,9 +15,7 @@ int main () {
         // error
         json_source += '\n';
     }
-
-	json_source = "[[],[]]";
     
-    parser.parse(val, json_source);
+    parser.parse(val, json_source);        
     std::cout << printer.print(val) << std::endl;
 }
