@@ -16,56 +16,6 @@ namespace JSON {
     typedef std::vector<Value>            Array;
     typedef std::map<std::string, Value>  Object;
     
-    // Possible JSON types
-    enum JsonType {
-        JSON_STRING = 0,
-        JSON_NUMBER = 1,
-        JSON_BOOL =   2,
-        JSON_ARRAY =  3,
-        JSON_OBJECT = 4,
-        JSON_NULL
-    };
-
-    // Human readable typenames
-    static std::map<JsonType, std::string> typenames = {
-        {JSON_STRING, "string"},
-        {JSON_NUMBER, "number"},
-        {JSON_BOOL,   "boolean"},
-        {JSON_ARRAY,  "array"},
-        {JSON_OBJECT, "object"},
-        {JSON_NULL,   "null"}
-    };
-
-    /*
-     * Occurs when trying to convert a value to a type
-     * for which no conversion is known.
-     */
-    class ConversionException : public std::exception {
-        public:
-            ConversionException(JsonType from, std::string& to) {
-              setReason(typenames[from], to);
-            }
-        
-            virtual ~ConversionException() throw() { }
-            virtual const char *what() const throw() {
-                return reason.c_str();
-            }
-        private:
-            void setReason(std::string& from, std::string& to) {
-                std::ostringstream ss;
-                ss
-                    << "No conversion from '"
-                    << from
-                    << "' to '"
-                    << to
-                    << "' known.";
-
-                reason = ss.str();
-            }
-            
-            std::string reason;
-    };
-
     // Convert x to String
     template<typename T> std::string toString(const T& t) {
         std::ostringstream stream;

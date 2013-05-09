@@ -215,6 +215,5 @@ TEST_CASE( "base/parse", "Basic parsing") {
     REQUIRE_THROWS(p.parse(val, "{{}}"));
     REQUIRE_NOTHROW(p.parse(val, "{\"a\": \"b\"}"));
     REQUIRE(val["a"].as<std::string>().compare("b") == 0);
-    
-    
+    REQUIRE_THROWS(val.as<double>());
 }

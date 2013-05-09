@@ -6,6 +6,47 @@
 #include <stdexcept>
 
 namespace JSON {
+      // Possible JSON types
+    enum JsonType {
+        JSON_STRING = 0,
+        JSON_NUMBER = 1,
+        JSON_BOOL =   2,
+        JSON_ARRAY =  3,
+        JSON_OBJECT = 4,
+        JSON_NULL
+    };
+  
+    // Human readable typenames
+    static std::map<JsonType, std::string> typenames = {
+        {JSON_STRING, "string"},
+        {JSON_NUMBER, "number"},
+        {JSON_BOOL,   "boolean"},
+        {JSON_ARRAY,  "array"},
+        {JSON_OBJECT, "object"},
+        {JSON_NULL,   "null"}
+    };
+
+    /*
+     * Occurs when trying to convert a value to a type
+     * for which no conversion is known.
+     */
+    class ConversionException : public std::runtime_error {
+        public:
+            ConversionException(JsonType from, std::string& to) 
+            : std::runtime_error("") {
+                std::stringstream ss;
+                ss
+                    << "No conversion from '"
+                    << typenames[from]
+                    << "' to '"
+                    << to
+                    << "' known.";
+                    
+                static_cast<std::runtime_error&>(*this) = 
+                std::runtime_error(ss.str());
+            }        
+    };
+    
     /*
      * Exception for unexpected end of parse input
      */
