@@ -473,7 +473,7 @@ namespace JSON {
             this->source = source;
             objectStack.push(&value);
             parseValue();
-            if (parseIndex < (source.length()-1)) {
+            if (parseIndex < source.length()) {
                 throw UnexpectedCharactersException();
             }
         }
