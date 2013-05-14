@@ -91,7 +91,7 @@ namespace JSON {
             // Return a reference to the top item on the stack.
             // The top item usually holds a reference to the 
             // current array / object at the parse position.
-            Value& top() {
+            Value& top() const {
                 return *objectStack.top();
             }
 
@@ -119,7 +119,7 @@ namespace JSON {
             }
 
             // Tests if a character is allowed for numeric expressions.
-            bool validNumericChar(char code) {
+            bool validNumericChar(char code) const {
                 return (code >= 48 && code <= 57)
                     || (code == 46)     // '.'
                     || (code == 45)     // '-'
@@ -130,13 +130,13 @@ namespace JSON {
 
             // Tests if a character is allowed to introduce a numeric
             // expression.
-            bool validNumericStartingChar(char code) {
+            bool validNumericStartingChar(char code) const {
                 return (code >= 48 && code <= 57)
                     || (code == 45);    // '-'
             }
 
             // Valid digit within an \u2360 unicode escape?
-            bool validHexDigit(char code) {
+            bool validHexDigit(char code) const {
                 return (code >= 48 && code <= 57)
                     || (code >= 65 && code <= 70)
                     || (code >= 97 && code <= 102);

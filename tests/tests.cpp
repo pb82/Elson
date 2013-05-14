@@ -147,7 +147,6 @@ TEST_CASE( "base/parse", "Basic parsing") {
         { "\"\\\\\"", "\"\\\"" },
         { "\"\\/\"", "\"/\"" },
         { "\"\\u5022\"", "\"倢\"" }
-        
     };
     
     for (auto pair: escapes) {
@@ -228,6 +227,55 @@ TEST_CASE( "base/parse", "Basic parsing") {
     REQUIRE_THROWS(p.parse(val, "[[[{}]]"));
     REQUIRE_THROWS(p.parse(val, "[{}]]"));
     REQUIRE_THROWS(p.parse(val, "{[]}"));
+}
+
+TEST_CASE( "base/unicode", "Unicode escape handling") {
+    Parser p;
+    Printer printer;
+    Value val;
+
+    std::map<std::string, std::string> escapes = {
+        { "\"\\u0041\"", "\"A\"" },
+        { "\"\\u0042\"", "\"B\"" },
+        { "\"\\u0043\"", "\"C\"" },
+        { "\"\\u0044\"", "\"D\"" },
+        { "\"\\u0045\"", "\"E\"" },
+        { "\"\\u0046\"", "\"F\"" },
+        { "\"\\u0047\"", "\"G\"" },
+        { "\"\\u0048\"", "\"H\"" },
+        { "\"\\u0049\"", "\"I\"" },
+        { "\"\\u0041\\u0042\\u0043\"", "\"ABC\"" },
+        { "\"\\u0041B\\u0043\"", "\"ABC\"" },
+        { "\"A\\u0042\\u0043\"", "\"ABC\"" },
+        { "\"\\u0041\\u0042C\"", "\"ABC\"" },
+        { "[\"\\u0041\\u0042C\"]", "[\"ABC\"]" },
+        { "\"\\u0041\\u004212\"", "\"AB12\"" },
+    };
+        
+    for (auto pair: escapes) {
+        REQUIRE_NOTHROW(p.parse(val, pair.first));
+        REQUIRE(printer.print(val).compare(pair.second) == 0);
+    }    
     
+    REQUIRE_THROWS(p.parse(val, "\"\\u0fg\""));
+    REQUIRE_THROWS(p.parse(val, "\"\\u00\""));
+    REQUIRE_THROWS(p.parse(val, "\"\\u\""));
+}
+
+TEST_CASE( "utils/bas", "Unicode escape handling") {
+    Value val = Object {
+        { "a", 1 },
+        { "b", 2 },
+        { "c", 3}
+    };
     
+    PropertyList properties = traverse(val);
+    REQUIRE(properties.size() == 3);    
+    
+    PropertyList list = filter(traverse(val), 
+        [] (std::string name, Value& value) -> bool {
+            return name.compare("b") == 0;
+        });
+        
+    REQUIRE(list.size() == 1);
 }
