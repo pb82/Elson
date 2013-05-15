@@ -283,5 +283,6 @@ TEST_CASE( "utils/bas", "Unicode escape handling") {
 
 
 int main (int argc, char* const argv[]) {
-    return Catch::Main( argc, argv );
+    exit(Catch::Main( argc, argv ));
+    return 0;
 }
