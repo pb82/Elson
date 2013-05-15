@@ -1,4 +1,5 @@
-#define CATCH_CONFIG_MAIN
+#define CATCH_CONFIG_RUNNER
+#include <iostream>
 #include "./Catch/catch.hpp"
 #include "../include/Elson.hpp"
 
@@ -277,5 +278,10 @@ TEST_CASE( "utils/bas", "Unicode escape handling") {
             return name.compare("b") == 0;
         });
         
-    REQUIRE(list.size() == 1);
+    REQUIRE(list.size() == 2);
+}
+
+
+int main (int argc, char* const argv[]) {
+    return Catch::Main( argc, argv );
 }

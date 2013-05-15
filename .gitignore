@@ -1,2 +1,5 @@
 *.out
 *.o
+*.log
+*.status
+Makefile
