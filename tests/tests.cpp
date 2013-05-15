@@ -263,7 +263,7 @@ TEST_CASE( "base/unicode", "Unicode escape handling") {
     REQUIRE_THROWS(p.parse(val, "\"\\u\""));
 }
 
-TEST_CASE( "utils/bas", "Unicode escape handling") {
+TEST_CASE( "utils/base", "Unicode escape handling") {
     Value val = Object {
         { "a", 1 },
         { "b", 2 },
@@ -278,12 +278,10 @@ TEST_CASE( "utils/bas", "Unicode escape handling") {
             return name.compare("b") == 0;
         });
         
-    REQUIRE(list.size() == 1);
+    REQUIRE(list.size() == 2);
 }
 
-
 int main (int argc, char* const argv[]) {
-     Catch::Main( argc, argv );
-     exit(1);
-     return 1;
+     exit(Catch::Main( argc, argv ));
+     return 0;
 }

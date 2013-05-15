@@ -4,4 +4,4 @@ all:
 	@(echo "Noting to buid")
 
 test:
-	@(cd tests; $(CXX) $(CXX_FLAGS) tests.cpp; ./a.out; rm a.out)
+	@(cd tests;$(CXX) $(CXX_FLAGS) tests.cpp;./a.out || [ $$? -eq 0 ])
