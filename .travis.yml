@@ -1,10 +1,4 @@
 language: cpp
 compiler:
-	- gcc
-	- clang
-notifications:
-	recipients:
-		- peter.braun@gmx.net
-	email:
-		on_success: change
-		on_failure: always
+  - gcc
+  - clang
