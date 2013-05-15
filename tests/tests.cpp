@@ -278,11 +278,12 @@ TEST_CASE( "utils/bas", "Unicode escape handling") {
             return name.compare("b") == 0;
         });
         
-    REQUIRE(list.size() == 2);
+    REQUIRE(list.size() == 1);
 }
 
 
 int main (int argc, char* const argv[]) {
-    exit(Catch::Main( argc, argv ));
-    return 0;
+     Catch::Main( argc, argv );
+     exit(1);
+     return 1;
 }
