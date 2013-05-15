@@ -278,7 +278,7 @@ TEST_CASE( "utils/base", "Unicode escape handling") {
             return name.compare("b") == 0;
         });
         
-    REQUIRE(list.size() == 2);
+    REQUIRE(list.size() == 1);
 }
 
 int main (int argc, char* const argv[]) {
