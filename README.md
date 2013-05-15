@@ -1,4 +1,4 @@
-Elson
+Elson [![Build Status](https://travis-ci.org/pb82/Elson.png?branch=master)](https://travis-ci.org/pb82/Elson)
 =====
 
 A C++11 JSON Parser/Serializer that aims to come as close to literal JSON as
