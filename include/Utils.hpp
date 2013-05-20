@@ -37,6 +37,8 @@ namespace JSON {
                 properties.push_back(Property {p.first, &p.second});
             }
         }
+
+        return properties;
 	}
 
     PropertyList filter(
