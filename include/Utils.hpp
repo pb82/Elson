@@ -9,21 +9,38 @@ namespace JSON {
     typedef std::pair<std::string, Value *> Property;
     typedef std::vector<Property> PropertyList;
     
-    PropertyList traverse(Value& object) {
-        PropertyList list;
+    PropertyList& list(
+        PropertyList& properties,
+        Value& object) {
         if (!object.is(JSON_OBJECT)) {
-            return list;
+            return properties;
         }
         
         for (auto p: object.asMutable<Object>()) {
-            list.push_back(Property {p.first, &p.second});
+            properties.push_back(Property {p.first, &p.second});
         }
         
-        return list;
+        return properties;
     }
-    
+
+	PropertyList& traverse(
+		PropertyList& properties,
+		Value& object) {
+		if (!object.is(JSON_OBJECT)) {
+		    return properties;
+		}
+
+        for (auto p: object.asMutable<Object>()) {
+            if (p.second.is(JSON_OBJECT)) {
+                traverse(properties, p.second);
+            } else {
+                properties.push_back(Property {p.first, &p.second});
+            }
+        }
+	}
+
     PropertyList filter(
-        PropertyList&& properties,
+        PropertyList& properties,
         std::function<bool(std::string, Value&)> filterFunction) {
         
         PropertyList list;

@@ -270,15 +270,36 @@ TEST_CASE( "utils/base", "Unicode escape handling") {
         { "c", 3}
     };
     
-    PropertyList properties = traverse(val);
+    PropertyList properties;
+    list(properties, val);
     REQUIRE(properties.size() == 3);    
     
-    PropertyList list = filter(traverse(val), 
+    PropertyList l;
+    PropertyList filtered = filter(list(l, val), 
         [] (std::string name, Value& value) -> bool {
             return name.compare("b") == 0;
-        });
+        }
+    );
         
-    REQUIRE(list.size() == 1);
+    REQUIRE(filtered.size() == 1);
+
+    PropertyList l2;
+    traverse(l2, val);
+
+    REQUIRE(l2.size() == 3);
+
+    val = Object {
+        {"a", 1},
+        {"b", Object {
+                {"c", "test"},
+                {"d", true}
+            }
+        }
+    };
+
+    PropertyList l3;
+    traverse(l3, val);
+    REQUIRE(l3.size() == 3);
 }
 
 int main (int argc, char* const argv[]) {
