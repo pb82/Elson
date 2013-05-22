@@ -83,6 +83,19 @@ namespace JSON {
               std::runtime_error(ss.str());
         }
     };
+    
+        // Invalid code point in utf8 sequence.
+    class InvalidCodePointException : public std::runtime_error {
+    public:
+        InvalidCodePointException(int codePoint)
+        : std::runtime_error("") {
+            std::stringstream ss;
+            ss << "Invalid code point " << codePoint;
+            static_cast<std::runtime_error&>(*this) = 
+              std::runtime_error(ss.str());
+        }
+    };
+
 }
 
 #endif // EXCEPTIONS_H

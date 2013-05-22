@@ -5,7 +5,7 @@
 #include <ctype.h>
 #include <stdint.h>
 
-#include "utf8.h"
+#include "Utf8.hpp"
 #include "Value.hpp"
 
 namespace JSON {

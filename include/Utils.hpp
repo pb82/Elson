@@ -23,12 +23,12 @@ namespace JSON {
         return properties;
     }
 
-	PropertyList& traverse(
-		PropertyList& properties,
-		Value& object) {
-		if (!object.is(JSON_OBJECT)) {
+    PropertyList& traverse(
+        PropertyList& properties,
+        Value& object) {
+        if (!object.is(JSON_OBJECT)) {
 		    return properties;
-		}
+        }
 
         for (auto p: object.asMutable<Object>()) {
             if (p.second.is(JSON_OBJECT)) {
@@ -39,7 +39,7 @@ namespace JSON {
         }
 
         return properties;
-	}
+    }
 
     PropertyList filter(
         PropertyList& properties,

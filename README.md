@@ -1,10 +1,14 @@
 Elson [![Build Status](https://travis-ci.org/pb82/Elson.png?branch=master)](https://travis-ci.org/pb82/Elson)
 =====
 
-A C++11 JSON Parser/Serializer that aims to come as close to literal JSON as
-possible. Header only. Tested with g++ 4.7.2
+A C++11 JSON Parser/Serializer that aims to make the usage of JSON in C++
+as natural and simple as possible.
 
---- This is a work in progress. It has not been tested extensively ---
+Tested with g++ 4.6, clang 3.1 (via Travis CI) and g++ 4.7.2
+
+License: MIT
+
+Contributions welcome!
 
 Writing JSON
 -------------
