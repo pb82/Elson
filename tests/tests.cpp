@@ -302,6 +302,24 @@ TEST_CASE( "utils/base", "Unicode escape handling") {
     REQUIRE(l3.size() == 3);
 }
 
+TEST_CASE("memory/heap", "heap allocation") {
+    Value* val = new Value;
+    (*val) = 5;
+    REQUIRE(val->is(JSON_NUMBER));
+    delete val;
+
+    val = new Value;
+    Parser *p = new Parser;
+    Printer *pr = new Printer;
+
+    p->parse(*val, "{\"answer\": 42}");
+    REQUIRE(pr->print((*val)["answer"]).compare("42") == 0);
+
+    delete val;
+    delete p;
+    delete pr;
+}
+
 int main (int argc, char* const argv[]) {
      exit(Catch::Main( argc, argv ));
      return 0;
