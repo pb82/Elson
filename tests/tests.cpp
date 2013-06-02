@@ -170,6 +170,10 @@ TEST_CASE( "base/parse", "Basic parsing") {
     REQUIRE(printer.print(val).compare("null") == 0);
     
     REQUIRE_NOTHROW(p.parse(val, "[]"));
+    REQUIRE_NOTHROW(p.parse(val, " []"));
+    REQUIRE_NOTHROW(p.parse(val, "[] "));
+    REQUIRE_NOTHROW(p.parse(val, "[ ]"));
+    REQUIRE_NOTHROW(p.parse(val, " [ ] "));
     REQUIRE(val.is(JSON_ARRAY));
     REQUIRE(printer.print(val).compare("[]") == 0);
     REQUIRE(val.as<Array>().size() == 0);
@@ -199,7 +203,12 @@ TEST_CASE( "base/parse", "Basic parsing") {
     REQUIRE_NOTHROW(p.parse(val, "[[],[]]"));
     REQUIRE_NOTHROW(p.parse(val, "[[[]],[[]]]"));
     REQUIRE_NOTHROW(p.parse(val, "[[[1]],[[2]]]"));
+    REQUIRE_NOTHROW(p.parse(val, "[1, 2, 3]"));
+    REQUIRE_NOTHROW(p.parse(val, "[ 1 , 2 , 3 ]"));
+    REQUIRE_NOTHROW(p.parse(val, " [1,2  ,   43, 5,7  ] "));
+    REQUIRE_NOTHROW(p.parse(val, "  [ 1, \"A 0\"  , \"\"  ]  "));
     REQUIRE_NOTHROW(p.parse(val, "[[[1,null,true,false,\"\"]],[[]]]"));
+
     REQUIRE(val[0][0][0].is(JSON_NUMBER));
     REQUIRE(val[0][0][1].is(JSON_NULL));
     REQUIRE(val[0][0][2].is(JSON_BOOL));
@@ -215,9 +224,18 @@ TEST_CASE( "base/parse", "Basic parsing") {
     REQUIRE(val[0][0].as<Array>().size() == 6);
     
     REQUIRE_NOTHROW(p.parse(val, "{}"));
+    REQUIRE_NOTHROW(p.parse(val, "{  }"));
+    REQUIRE_NOTHROW(p.parse(val, " { } "));
+
     REQUIRE_THROWS(p.parse(val, "{1}"));
     REQUIRE_THROWS(p.parse(val, "{{}}"));
     REQUIRE_NOTHROW(p.parse(val, "{\"a\": \"b\"}"));
+    REQUIRE_NOTHROW(p.parse(val, "{ \"a\" :  42}"));
+    REQUIRE_NOTHROW(p.parse(val, "{ \"a\" :42  }"));
+    REQUIRE_NOTHROW(p.parse(val, "{ \"a\":42}"));
+    REQUIRE_NOTHROW(p.parse(val, "{\"a\":42}"));
+    REQUIRE_NOTHROW(p.parse(val, " { \"a\" :  \"b\" } "));
+
     REQUIRE(val["a"].as<std::string>().compare("b") == 0);
     REQUIRE_THROWS(val.as<double>());
     
@@ -225,6 +243,9 @@ TEST_CASE( "base/parse", "Basic parsing") {
     REQUIRE_NOTHROW(p.parse(val, "[{},{}]"));
     REQUIRE_NOTHROW(p.parse(val, "[{},[]]"));
     REQUIRE_NOTHROW(p.parse(val, "[[[{}]]]"));
+    REQUIRE_NOTHROW(p.parse(val, "[ ]"));
+    REQUIRE_NOTHROW(p.parse(val, "[ { }, {}]"));
+    REQUIRE_NOTHROW(p.parse(val, "[   {  } ,  {   } ]"));
     REQUIRE_THROWS(p.parse(val, "[[[{}]]"));
     REQUIRE_THROWS(p.parse(val, "[{}]]"));
     REQUIRE_THROWS(p.parse(val, "{[]}"));
@@ -263,7 +284,7 @@ TEST_CASE( "base/unicode", "Unicode escape handling") {
     REQUIRE_THROWS(p.parse(val, "\"\\u\""));
 }
 
-TEST_CASE( "utils/base", "Unicode escape handling") {
+TEST_CASE( "utils/base", "Utils") {
     Value val = Object {
         { "a", 1 },
         { "b", 2 },

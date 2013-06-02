@@ -405,12 +405,12 @@ namespace JSON {
     void Parser::readUTF8Escape() throw(std::exception) {
         consume(); // u
         int codePoint = -1;
-        std::string tmp = "    ";
+        std::string tmp(4,32);
         std::stringstream ss;
         std::string result;
         wideString str32;
         
-        for (int index=0;index<4;index++) {
+        for (int index=0;index<tmp.length();index++) {
             if (!hasNext() || !validHexDigit(peek())) {
               throw ParseException(lineNumber);
             }
@@ -432,6 +432,7 @@ namespace JSON {
         consume(); // '['
                 
         objectStack.push(&store(Array {}));
+        clearWhitespace();
 
         // Empty array?
         if (peek() == ']') {
@@ -441,8 +442,6 @@ namespace JSON {
         }
                 
         while(hasNext()) {                        
-            clearWhitespace();
-
             parseValue();
             clearWhitespace();
             
@@ -465,7 +464,7 @@ namespace JSON {
     /**
      * Entry points
      */
-    inline void Parser::parse(Value& value, const std::string &source) 
+    void Parser::parse(Value& value, const std::string &source) 
     throw(std::exception) {
         reset();
         if (source.length() > 0) {
@@ -473,13 +472,14 @@ namespace JSON {
             this->source = source;
             objectStack.push(&value);
             parseValue();
+            clearWhitespace();
             if (parseIndex < source.length()) {
                 throw UnexpectedCharactersException();
             }
         }
     }
 
-    inline void Parser::parse(Value& value, const char *source) 
+    void Parser::parse(Value& value, const char *source) 
     throw(std::exception) {
         std::string _source(source);
         parse(value, _source);
