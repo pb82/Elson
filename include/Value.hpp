@@ -4,7 +4,6 @@
 #include <sstream>
 #include <vector>
 #include <tuple>
-#include <map>
 #include <cmath>
 
 namespace JSON {

@@ -410,7 +410,7 @@ namespace JSON {
         std::string result;
         wideString str32;
         
-        for (int index=0;index<tmp.length();index++) {
+        for (unsigned int index=0;index<tmp.length();index++) {
             if (!hasNext() || !validHexDigit(peek())) {
               throw ParseException(lineNumber);
             }

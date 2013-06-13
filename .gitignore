@@ -3,4 +3,5 @@
 *.log
 *.status
 *.swp
+jsonpp
 configure.in
