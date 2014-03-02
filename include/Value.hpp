@@ -150,8 +150,12 @@ namespace JSON {
         }
 
         // Value access (and conversion)
-        template <typename T> T as() throw(ConversionException);
-        template <typename T> T& asMutable();                
+        template <typename T> T as() const throw(ConversionException);
+        template <typename T> T& asMutable();   
+        
+        explicit operator int() { return (int) std::get<JSON_NUMBER>(value); }
+        explicit operator double() { return std::get<JSON_NUMBER>(value); }
+        
     private:
         // The actual type of the value.
         JsonType type;
@@ -181,7 +185,7 @@ namespace JSON {
             
     // Template specializations for Value::as
     // JSON_NUMBER
-    template <> double Value::as() throw(ConversionException) {
+    template <> double Value::as() const throw(ConversionException) {
         switch(type) {
         case JSON_NUMBER:
             // Number -> Number
@@ -199,17 +203,17 @@ namespace JSON {
     
     // JSON_NUMBER
     // Simply cast to other numeric types
-    template <> int Value::as() 
+    template <> int Value::as() const
     throw(ConversionException) { return (int) as<double>(); }
     
-    template <> unsigned int Value::as() 
+    template <> unsigned int Value::as() const 
     throw(ConversionException) { return (unsigned int) std::abs(as<double>()); }
     
-    template <> long Value::as() 
+    template <> long Value::as() const
     throw(ConversionException) { return (long) as<double>(); }
     
     // JSON_STRING
-    template <> std::string Value::as() throw(ConversionException) {
+    template <> std::string Value::as() const throw(ConversionException) {
         switch(type) {
         case JSON_STRING:
             // String -> String
@@ -229,7 +233,7 @@ namespace JSON {
     }
     
     // JSON_BOOL
-    template <> bool Value::as() throw(ConversionException) {
+    template <> bool Value::as() const throw(ConversionException) {
         switch(type) {
         case JSON_BOOL:
             // Bool -> Bool
@@ -244,7 +248,7 @@ namespace JSON {
     }   
     
     // JSON_ARRAY
-    template <> Array Value::as() throw(ConversionException) {
+    template <> Array Value::as() const throw(ConversionException) {
         switch(type) {
         case JSON_ARRAY:
             // Array -> Array
@@ -255,7 +259,7 @@ namespace JSON {
     }
     
     // JSON_OBJECT
-    template <> Object Value::as() throw(ConversionException) {
+    template <> Object Value::as() const throw(ConversionException) {
         switch(type) {
         case JSON_OBJECT:
             // Object -> Object
