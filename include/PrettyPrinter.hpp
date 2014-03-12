@@ -12,8 +12,8 @@ namespace JSON {
             : indentDepth(indent),
               currentIndent(0) { }
     private:
-        void printArray(Value& value, std::ostringstream &out);
-        void printObject(Value& value, std::ostringstream &out);
+        void printArray(const Value& value, std::ostringstream &out);
+        void printObject(const Value& value, std::ostringstream &out);
         void printIndent(std::ostringstream& out);
 
         unsigned int indentDepth;
@@ -26,7 +26,7 @@ namespace JSON {
         }
     }
 
-    void PrettyPrinter::printArray(Value& value, std::ostringstream &out) {
+    void PrettyPrinter::printArray(const Value& value, std::ostringstream &out) {
         bool firstItem = true;
         out << "[";
         for (auto item : value.as<Array>()) {
@@ -37,7 +37,7 @@ namespace JSON {
         out << "]";
     }
 
-    void PrettyPrinter::printObject(Value& value, std::ostringstream &out) {
+    void PrettyPrinter::printObject(const Value& value, std::ostringstream &out) {
         currentIndent += indentDepth;
         out << "{\n";
         bool firstLine = true;

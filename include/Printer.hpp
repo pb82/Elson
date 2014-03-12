@@ -6,26 +6,26 @@
 namespace JSON {
     class Printer {
     public:
-        void print(Value val, std::ostringstream& out);
-        std::string print(Value val);
+        void print(const Value val, std::ostringstream& out);
+        std::string print(const Value val);
 
         virtual ~Printer() { }
 
     protected:
-        void dispatchType(Value &val, std::ostringstream &out);
-        void printNumber(Value &val, std::ostringstream &out);
-        void printBoolean(Value &val, std::ostringstream &out);
-        void printString(Value &val, std::ostringstream &out);
+        void dispatchType(const Value &val, std::ostringstream &out);
+        void printNumber(const Value &val, std::ostringstream &out);
+        void printBoolean(const Value &val, std::ostringstream &out);
+        void printString(const Value &val, std::ostringstream &out);
 
         /**
           * Allow to overwrite the formatting of Object and
           * Array for Pretty Printing.
           */
-        virtual void printObject(Value &val, std::ostringstream &out);
-        virtual void printArray(Value &val, std::ostringstream &out);
+        virtual void printObject(const Value &val, std::ostringstream &out);
+        virtual void printArray(const Value &val, std::ostringstream &out);
     };
 
-    void Printer::dispatchType(Value &val, std::ostringstream &out) {    
+    void Printer::dispatchType(const Value &val, std::ostringstream &out) {    
         switch (val.getType()) {
         case JSON_OBJECT:
             printObject(val, out);
@@ -48,7 +48,7 @@ namespace JSON {
         }
     }
 
-    void Printer::printObject(Value &val, std::ostringstream &out) {
+    void Printer::printObject(const Value &val, std::ostringstream &out) {
         bool firstLine = true;
         out << "{";
         for (auto pair : val.as<Object>()) {
@@ -63,7 +63,7 @@ namespace JSON {
         out << "}";
     }
 
-    void Printer::printArray(Value &val, std::ostringstream &out) {
+    void Printer::printArray(const Value &val, std::ostringstream &out) {
         bool firstItem = true;
         out << "[";
         for (auto item : val.as<Array>()) {
@@ -74,25 +74,25 @@ namespace JSON {
         out << "]";
     }
 
-    void Printer::printNumber(Value &val, std::ostringstream &out) {
+    void Printer::printNumber(const Value &val, std::ostringstream &out) {
         out << val.as<double>();
     }
 
-    void Printer::printBoolean(Value &val, std::ostringstream &out) {
+    void Printer::printBoolean(const Value &val, std::ostringstream &out) {
         out << (val.as<bool>() ? "true" : "false");
     }
 
-    void Printer::printString(Value &val, std::ostringstream &out) {
+    void Printer::printString(const Value &val, std::ostringstream &out) {
         out << "\"";
         out << val.as<std::string>();
         out << "\"";
     }
 
-    void Printer::print(Value val, std::ostringstream &out) {
+    void Printer::print(const Value val, std::ostringstream &out) {
         dispatchType(val, out);
     }
 
-    std::string Printer::print(Value val) {
+    std::string Printer::print(const Value val) {
         std::ostringstream out;
         dispatchType(val, out);
         return out.str();

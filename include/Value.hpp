@@ -65,14 +65,7 @@ namespace JSON {
             std::get<JSON_STRING>(value) = std::string(val);
         }
     
-        Value(std::string& val)
-        : type(JSON_STRING) {
-            std::get<JSON_STRING>(value) = val;
-        }
-
-        // Construction from std::string rvalue reference
-        // Value val(std::string("str");
-        Value(std::string&& val)
+        Value(const std::string& val)
         : type(JSON_STRING) {
             std::get<JSON_STRING>(value) = val;
         }
@@ -84,12 +77,7 @@ namespace JSON {
         }
 
         // JSON_ARRAY
-        Value(Array& val) 
-        : type(JSON_ARRAY) {
-            std::get<JSON_ARRAY>(value) = val;
-        }
-
-        Value(Array&& val) 
+        Value(const Array& val) 
         : type(JSON_ARRAY) {
             std::get<JSON_ARRAY>(value) = val;
         }
@@ -102,20 +90,13 @@ namespace JSON {
         }
 
         // JSON_OBJECT
-        Value(Object& val) 
+        Value(const Object& val) 
         : type(JSON_OBJECT) {
             std::get<JSON_OBJECT>(value) = val;
         }
         
-        // Construction from object rvalue reference
-        // Value val(Object {{"size", 5}});
-        Value(Object&& val) 
-        : type(JSON_OBJECT) {
-            std::get<JSON_OBJECT>(value) = val;
-        }
-
         // Access and construction by [] operator
-        Value& operator[](std::string&& key) {
+        Value& operator[](const std::string& key) {
             // This may also be used for construction so
             // ensure that the value is object type.
             type = JSON_OBJECT;
@@ -133,24 +114,20 @@ namespace JSON {
             return std::get<JSON_ARRAY>(value)[index];
         }
 
-        bool is(JsonType type) {
+        bool is(JsonType type) const {
             return this->type == type;
         }
 
-        JsonType getType() {
+        JsonType getType() const {
             return type;
         }
 
-        void push_back(Value& val) {
-            std::get<JSON_ARRAY>(value).push_back(val);
-        }
-
-        void push_back(Value&& val) {
+        void push_back(const Value& val) {
             std::get<JSON_ARRAY>(value).push_back(val);
         }
 
         // Value access (and conversion)
-        template <typename T> T as() throw(ConversionException);
+        template <typename T> T as() const throw(ConversionException);
         template <typename T> T& asMutable();                
     private:
         // The actual type of the value.
@@ -181,7 +158,7 @@ namespace JSON {
             
     // Template specializations for Value::as
     // JSON_NUMBER
-    template <> double Value::as() throw(ConversionException) {
+    template <> double Value::as() const throw(ConversionException) {
         switch(type) {
         case JSON_NUMBER:
             // Number -> Number
@@ -199,17 +176,17 @@ namespace JSON {
     
     // JSON_NUMBER
     // Simply cast to other numeric types
-    template <> int Value::as() 
+    template <> int Value::as() const
     throw(ConversionException) { return (int) as<double>(); }
     
-    template <> unsigned int Value::as() 
+    template <> unsigned int Value::as() const
     throw(ConversionException) { return (unsigned int) std::abs(as<double>()); }
     
-    template <> long Value::as() 
+    template <> long Value::as() const 
     throw(ConversionException) { return (long) as<double>(); }
     
     // JSON_STRING
-    template <> std::string Value::as() throw(ConversionException) {
+    template <> std::string Value::as() const throw(ConversionException) {
         switch(type) {
         case JSON_STRING:
             // String -> String
@@ -229,7 +206,7 @@ namespace JSON {
     }
     
     // JSON_BOOL
-    template <> bool Value::as() throw(ConversionException) {
+    template <> bool Value::as() const throw(ConversionException) {
         switch(type) {
         case JSON_BOOL:
             // Bool -> Bool
@@ -244,7 +221,7 @@ namespace JSON {
     }   
     
     // JSON_ARRAY
-    template <> Array Value::as() throw(ConversionException) {
+    template <> Array Value::as() const throw(ConversionException) {
         switch(type) {
         case JSON_ARRAY:
             // Array -> Array
@@ -255,7 +232,7 @@ namespace JSON {
     }
     
     // JSON_OBJECT
-    template <> Object Value::as() throw(ConversionException) {
+    template <> Object Value::as() const throw(ConversionException) {
         switch(type) {
         case JSON_OBJECT:
             // Object -> Object

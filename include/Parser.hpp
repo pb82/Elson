@@ -97,7 +97,7 @@ namespace JSON {
 
             // Store a parsed value and return a reference
             // to it
-            Value& store(Value&& val) {
+            Value& store(const Value& val) {
                 if (top().is(JSON_ARRAY)) {
                     // Current parse position is inside an array:
                     // Append the new item to the end of the array
