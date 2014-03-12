@@ -103,12 +103,6 @@ namespace JSON {
             return std::get<JSON_OBJECT>(value)[key];
         }
 
-        // Access and construction by [] operator
-        // Invoke operator[](string&& key)
-        Value& operator[](std::string& key) {
-            return (*this)[key.c_str()];
-        }
-
         // Array access and manipulation
         Value& operator[](int index) {
             return std::get<JSON_ARRAY>(value)[index];
